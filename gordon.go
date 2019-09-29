@@ -2,14 +2,42 @@ package main
 
 import (
 	"fmt"
+	irc "github.com/fluffle/goirc/client"
 	flag "github.com/ogier/pflag"
 	"os"
 )
 
 const version = "0.0.0"
 
+var (
+	bot  *irc.Conn
+	quit chan bool
+)
+
 func main() {
 	fmt.Println("Loading Gordon IRC bot...")
+	bot = irc.SimpleClient("Gordon", "gordon")
+
+	registerHandlers()
+
+	fmt.Println("Connecting to IRC...")
+	if err := bot.ConnectTo("irc.freenode.net"); err != nil {
+		fmt.Printf("Connection error: %s\n", err.Error())
+	}
+
+	<-quit
+}
+
+func registerHandlers() {
+	bot.HandleFunc(irc.CONNECTED, func(conn *irc.Conn, line *irc.Line) {
+		fmt.Println("Gordon's alive!")
+
+		conn.Join("#example")
+	})
+
+	bot.HandleFunc(irc.DISCONNECTED, func(conn *irc.Conn, line *irc.Line) {
+		quit <- true
+	})
 }
 
 func init() {
