@@ -5,6 +5,7 @@ import (
 	irc "github.com/fluffle/goirc/client"
 	flag "github.com/ogier/pflag"
 	"os"
+	"strings"
 )
 
 const version = "0.0.0"
@@ -18,7 +19,8 @@ func main() {
 	fmt.Println("Loading Gordon IRC bot...")
 	bot = irc.SimpleClient("Gordon", "gordon")
 
-	registerHandlers()
+	registerCoreHandlers()
+	registerCommands()
 
 	fmt.Println("Connecting to IRC...")
 	if err := bot.ConnectTo("irc.freenode.net"); err != nil {
@@ -28,7 +30,7 @@ func main() {
 	<-quit
 }
 
-func registerHandlers() {
+func registerCoreHandlers() {
 	bot.HandleFunc(irc.CONNECTED, func(conn *irc.Conn, line *irc.Line) {
 		fmt.Println("Gordon's alive!")
 
@@ -37,6 +39,21 @@ func registerHandlers() {
 
 	bot.HandleFunc(irc.DISCONNECTED, func(conn *irc.Conn, line *irc.Line) {
 		quit <- true
+	})
+
+	bot.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
+		fmt.Printf("[RECV] %s <%s> %s\n", line.Target(), line.Nick, line.Text())
+	})
+}
+
+func registerCommands() {
+	bot.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
+		if strings.ToLower(line.Text()) != "ping" {
+			return
+		}
+
+		conn.Privmsg(line.Target(), "PONG!")
+		fmt.Printf("[SEND] %s <%s> %s\n", line.Target(), conn.Me().Nick, "PONG!")
 	})
 }
 
