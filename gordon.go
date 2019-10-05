@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/dshoreman/gordon/pkg/gordon"
 	irc "github.com/fluffle/goirc/client"
 	flag "github.com/ogier/pflag"
 	"math/rand"
@@ -73,6 +74,8 @@ func registerCommands() {
 		conn.Privmsg(line.Target(), "PONG!")
 		fmt.Printf("[SEND] %s <%s> %s\n", line.Target(), conn.Me().Nick, "PONG!")
 	})
+
+	gordon.AddTrigger(bot, "dataja", "Don't ask to ask, just ask!")
 }
 
 func registerWatchers() {
