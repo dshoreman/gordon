@@ -7,8 +7,6 @@ import (
 	flag "github.com/ogier/pflag"
 	"math/rand"
 	"os"
-	"regexp"
-	"strings"
 	"time"
 )
 
@@ -21,7 +19,6 @@ var (
 	ident    string
 	nickname string
 	realname string
-	quit     chan bool
 )
 
 var squirrels = []string{
@@ -34,59 +31,22 @@ var squirrels = []string{
 }
 
 func main() {
-	fmt.Println("Loading Gordon IRC bot...")
-	bot = irc.SimpleClient(nickname, ident, realname)
+	bot = gordon.CreateBot(nickname, ident, realname, channel)
 
-	registerCoreHandlers()
 	registerCommands()
 	registerWatchers()
 
-	fmt.Println("Connecting to IRC...")
-	if err := bot.ConnectTo(server); err != nil {
-		fmt.Printf("Connection error: %s\n", err.Error())
-	}
-
-	<-quit
-}
-
-func registerCoreHandlers() {
-	bot.HandleFunc(irc.CONNECTED, func(conn *irc.Conn, line *irc.Line) {
-		fmt.Println("Gordon's alive!")
-
-		conn.Join(channel)
-	})
-
-	bot.HandleFunc(irc.DISCONNECTED, func(conn *irc.Conn, line *irc.Line) {
-		quit <- true
-	})
-
-	bot.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
-		fmt.Printf("[RECV] %s <%s> %s\n", line.Target(), line.Nick, line.Text())
-	})
+	gordon.Connect(bot, server)
 }
 
 func registerCommands() {
-	bot.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
-		if strings.ToLower(line.Text()) != "ping" {
-			return
-		}
-
-		conn.Privmsg(line.Target(), "PONG!")
-		fmt.Printf("[SEND] %s <%s> %s\n", line.Target(), conn.Me().Nick, "PONG!")
-	})
-
 	gordon.AddTrigger(bot, "dataja", "Don't ask to ask, just ask!")
+	gordon.AddTrigger(bot, "ping", "Pong!")
 }
 
 func registerWatchers() {
-	bot.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
-		if match, _ := regexp.MatchString(`ship\s*it`, line.Text()); false == match {
-			return
-		}
-
-		msg := squirrels[rand.Intn(len(squirrels))]
-		conn.Privmsg(line.Target(), msg)
-		fmt.Printf("[SEND] %s <%s> %s\n", line.Target(), conn.Me().Nick, msg)
+	gordon.AddCommand(bot, `ship\s*it`, func() string {
+		return squirrels[rand.Intn(len(squirrels))]
 	})
 }
 
