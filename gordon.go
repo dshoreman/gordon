@@ -33,15 +33,9 @@ var squirrels = []string{
 func main() {
 	bot = gordon.CreateBot(nickname, ident, realname, channel)
 
-	registerCommands()
 	registerWatchers()
 
 	gordon.Connect(bot, server)
-}
-
-func registerCommands() {
-	gordon.AddTrigger(bot, "dataja", "Don't ask to ask, just ask!")
-	gordon.AddTrigger(bot, "ping", "Pong!")
 }
 
 func registerWatchers() {

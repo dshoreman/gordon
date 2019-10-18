@@ -1,8 +1,11 @@
 package gordon
 
 import (
+	"encoding/json"
 	"fmt"
 	irc "github.com/fluffle/goirc/client"
+	"io/ioutil"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -30,6 +33,8 @@ func CreateBot(nickname, ident, realname, channel string) *irc.Conn {
 	bot.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
 		fmt.Printf("[RECV] %s <%s> %s\n", line.Target(), line.Nick, line.Text())
 	})
+
+	loadTriggers()
 
 	return bot
 }
@@ -70,4 +75,25 @@ func AddCommand(bot *irc.Conn, trigger string, handler func() string) {
 		conn.Privmsg(line.Target(), msg)
 		fmt.Printf("[SEND] %s <%s> %s\n", line.Target(), conn.Me().Nick, msg)
 	})
+}
+
+// loadTriggers loads triggers from data/triggers.json
+func loadTriggers() {
+	var triggers map[string]string
+	fmt.Println("\nLoading builtin JSON triggers... ")
+	if data, err := ioutil.ReadFile("data/triggers.json"); err == nil {
+		if err := json.Unmarshal(data, &triggers); err != nil {
+			fmt.Printf("[WARN] %s\n", err)
+		}
+
+		for trigger, response := range triggers {
+			AddTrigger(bot, trigger, response)
+		}
+
+		fmt.Printf("Builtin triggers loaded!\n\n")
+	} else if !os.IsNotExist(err) {
+		fmt.Printf("[WARN] %s\n", err)
+	} else {
+		fmt.Printf("[WARN] Unexpected error: %s\n", err)
+	}
 }
