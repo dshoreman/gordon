@@ -3,6 +3,7 @@ package gordon
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dshoreman/gordon/scripts/shipit"
 	irc "github.com/fluffle/goirc/client"
 	"io/ioutil"
 	"os"
@@ -35,6 +36,7 @@ func CreateBot(nickname, ident, realname, channel string) *irc.Conn {
 	})
 
 	loadTriggers()
+	loadScripts()
 
 	return bot
 }
@@ -96,4 +98,9 @@ func loadTriggers() {
 	} else {
 		fmt.Printf("[WARN] Unexpected error: %s\n", err)
 	}
+}
+
+// loadScripts loads the builtin scripts from pkg/scripts/
+func loadScripts() {
+	shipit.Handle()
 }
