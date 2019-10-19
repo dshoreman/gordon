@@ -39,6 +39,12 @@ func main() {
 }
 
 func registerWatchers() {
+	gordon.AddCommand(bot, `┻━┻`, func() string {
+		return "┬─┬ノ( º _ ºノ)"
+	})
+	gordon.AddCommand(bot, `pastebin\.com/`, func() string {
+		return "Please use https://kopy.io or https://gist.github.com to paste code. Pastebin is slow and full of ads."
+	})
 	gordon.AddCommand(bot, `ship\s*it`, func() string {
 		return squirrels[rand.Intn(len(squirrels))]
 	})

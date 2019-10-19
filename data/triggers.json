@@ -1,4 +1,19 @@
 {
     "dataja": "Don't ask to ask, just ask! http://i.qkme.me/3qt516.jpg",
-    "ping": "Pong!"
+    "nick": "Hello! You're currently using a nick that's difficult to distinguish. Please type in \"/nick your_name\" so we can easily identify you",
+    "nopros": "Please don't ask around for pros on something — present your question to the room according to our guidelines and someone will help you if they can or send you on the right path.",
+    "ping": "Pong!",
+    "tryit": "Please make sure you've attempted something before asking. You learn much more by experimentation than by asking without having even tried.",
+    "ugt": "It is always morning when someone comes into a channel. We call that Universal Greeting Time: http://www.total-knowledge.com/~ilya/mips/ugt.html",
+    "wysiwyg": "What you see is what you get",
+
+    "no": "NOOOOOOOOO! http://www.youtube.com/watch?v=umDr0mPuyQc",
+    "drama": "I just can't take it anymore....",
+    "tableflip": "(╯°□°)╯︵ ┻━┻",
+    "dunno": "¯\\_(ツ)_/¯",
+    "tableflippin": "http://i.imgur.com/xBQOzc4.gif",
+    "goal": "GOOOOOOOOOOOOOOOOOOOOOOAAAAAAAAAAAAAAAAALLLLLLLLLL!!!!!!!",
+    "unstoppable": "I am unstoppable!!! http://i.imgur.com/ALHS4Za.png",
+    "haha": "http://i.imgur.com/CVhoCwr.jpg",
+    "phrasing": "Phrasing! https://getyarn.io/yarn-clip/715503bc-923d-46c1-a89b-a5c0c48d7c7a"
 }
